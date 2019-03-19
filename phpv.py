@@ -25,6 +25,7 @@ mods_available  = {}
 mods_enabled    = {}
 restart         = False        
 num_registro    = 0
+msg             = ""
 
 def leer_log_local():
     log = open("phpv.log","r")
@@ -48,7 +49,7 @@ def leer_archivo(archivo):
 
 def reiniciar_apache():
     os.system("sudo service apache2 restart")
-    escribir_log_local("FUNCTION","reiniciar_apache()")
+    escribir_log_local("EXEC ","reiniciar_apache()")
     restart = False
 
 def leer_apache_conf():
@@ -67,6 +68,7 @@ def cargar_config_json():
 def mostrar_mensaje(result, msg=""):
     if msg:
         print msg
+        escribir_log_local("FUNCTION", "Mostar mensaje")
    
 def comprobar_version_php_funcionando():
     global versionActual
@@ -86,16 +88,16 @@ def set_version_php(ver):
         escribir_log_local("FUNCTION","set_version_php("+str(ver)+")")
         subprocess.check_output("sudo a2dismod php"+str(versionActual), shell=True)
         print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Desactivando modulo PHP " + str(versionActual)     
-        time.sleep(1)
+        time.sleep(.8)
         escribir_log_local("  ACCTION","Desactivando modulo PHP "+str(versionActual))
     
         subprocess.check_output("sudo a2enmod php"+version, shell=True)
         print bcolors.OKGREEN +"OK -> " +  bcolors.ENDC +"Activando modulo PHP " + version
-        time.sleep(1)   
+        time.sleep(.8)   
         escribir_log_local("  ACCTION","Activando modulo PHP "+str(version))
         reiniciar_apache() 
         print bcolors.OKGREEN +"OK -> " +  bcolors.ENDC +"Reiniciando Apache "
-        time.sleep(1)
+        time.sleep(.8)
 
         subprocess.check_output("sudo update-alternatives --set php /usr/bin/php" + str(version), shell=True) 
         print bcolors.OKGREEN +"OK -> Version actual PHP-" + str(version)   +  bcolors.ENDC     
@@ -184,11 +186,15 @@ def cambiar_estado_modulo_php(mod):
     listar_modulos_php()
     
 def apache_status():
-    if(restart):    
+    if(restart):
+        print "#"*35    
         print "#¡¡¡     "+ bcolors.FAIL   +"Restart Apache (y)" +  bcolors.ENDC +"    !!!!"
+        print "#"*35
     
     else:        
+        print "#"*35
         print "#---         "+ bcolors.OKGREEN +"Apache OK" +  bcolors.ENDC +"         ---#"
+        print "#"*35
 
 def menu_informacion_sistema():
     escribir_log_local("   MODULE","Cargado menu_informacion_sistema")
@@ -284,26 +290,26 @@ def mostrar_menu():
     escribir_log_local("MENU","Entrando en Menu")
   
 def cargar_opciones_menu():   
-    global restart    
+    global restart  
+    global msg
+    if msg:   
+        escribir_log_local("MSG ", str(msg))         
+        print "MSG:"+str(msg) 
+
     print "#"*35
-    option = raw_input("###    "+bcolors.HEADER + "(0=Menu - 00=subMenu)"+bcolors.ENDC +"    ###\n"+"#"*35+"\nOpcion ->        ")   
+    option = raw_input("###        "+bcolors.HEADER + "[m] = SubMenu"+bcolors.ENDC +"        ###\n"+"#"*35+"\nOpcion ->        ")   
       
     option = str(option)
 
-    if option == "a":
-       sub_menu()    
     
     if option == "m":                     
         sub_menu()
 
     if option == "y":
         reiniciar_apache()
-        mostrar_menu()        
-    
-    if option == "00":                     
-        sub_menu()
+        mostrar_menu() 
 
-    if option == "0":                
+    if option == "r":                
         os.system("clear")  
         mostrar_menu()
                     
@@ -329,10 +335,9 @@ def cargar_opciones_menu():
     if option == "6":               
         print bcolors.OKBLUE + "------      HOSTS        ------"+bcolors.ENDC     
         print bcolors.OKBLUE + "------     ctrl + c      ------"+bcolors.ENDC 
-        cat_hosts        = subprocess.check_output("cat /etc/hosts", shell=True)
-        mostrar_mensaje("True", cat_hosts)
-                    
-    
+        os.system("tail -f /etc/hosts")
+        #mostrar_mensaje("True", cat_hosts)
+                       
     if option == "7":  
         listar_modulos_php()    
     
@@ -349,20 +354,23 @@ def cargar_opciones_menu():
         set_version_php("11")          
     
     else:
-        #mostrar_menu()
+        mostrar_menu()
         cargar_opciones_menu()
 
     if (option == "NULL"):
         print "null"
-    
-    print option
 
 
+   
 def sub_menu():
     config_json = cargar_config_json()
-    escribir_log_local("MENU","Entrando en Sub Menu")
+    escribir_log_local("MENU","Cargado Sub Menu")
+    global msg
+    if msg:   
+        escribir_log_local("MSG ", str(msg))         
+        print "MSG:"+str(msg)
     while(1==1):
-        os.system("clear") 
+        os.system("clear")
         print "#"*35
         print "###          "+ bcolors.BOLD   +"SUB-MENU" +  bcolors.ENDC +"           ###"
         print "#"*35
@@ -375,17 +383,21 @@ def sub_menu():
                 print "### "+ bcolors.OKBLUE   + sub_menu['name'] +  bcolors.ENDC +    automargen(25, "### "+ sub_menu['name'])   +"-> "+ bcolors.OKBLUE +  str(sub_menu['id']) +  bcolors.ENDC +"   ###"      
     
         print "#"*35
-        sub_option = raw_input("###        "+bcolors.OKBLUE + "(SUB_OPTION)"+bcolors.ENDC +"         ###\n"+"#"*35+"\nOpcion ->     ")
+        sub_option = raw_input("###          "+bcolors.HEADER + "[m] = Menu"+bcolors.ENDC +"         ###\n"+"#"*35+"\nOpcion ->        ") 
         
         for opt in config_json['submenu']:                                 
             if str(opt["id"]) == str(sub_option):               
                 action =  str(opt["action"])
                 if opt["type"] == "command":
-                    escribir_log_local("ACTION", str(action))
-                    os.system(action)                                     
+                    escribir_log_local("EXEC", str(action))                    
+                    msg = os.system(action)                                                    
                 else:
-                    escribir_log_local("ACTION", str(action))      
-                    exec(action)    
+                    escribir_log_local("EXEC ", str(action))  
+                    exec(action) 
+                    msg = os.system(action)  
+                    
+        
+        
 
 
 def inicio():
@@ -395,9 +407,7 @@ def inicio():
 
 
 
-#Ejecutamos inico
+# Iniciamos programa
 inicio()
 
 
-# escribir_local_log()
-# leer_local_log()
