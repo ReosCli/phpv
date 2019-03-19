@@ -1,0 +1,63 @@
+{   
+    "submenu":[
+        {   "id": 1,
+            "name":     "Modulos php 5.6",
+            "group":    "mod_php",
+            "modules":  "",
+            "action":   "sudo apt-get install php5.6 libapache2-mod-php5.6 php5.6-mcrypt php5.6-mysql php5.6-mbstring php5.6-gettext php5.6-xml php5.6-json php5.6-curl php5.6-zip"        
+        },
+        {   "id": 2,
+            "name":     "Modulos php 7.0",
+            "group":    "mod_php",
+            "modules":  "",
+            "action":   "sudo apt-get install php7.0 libapache2-mod-php7.0 php7.0-mcrypt php7.0-mysql php7.0-mbstring php7.0-gettext php7.0-xml php7.0-json php7.0-curl php7.0-zip"                            
+        },
+        {   "id": 3,
+            "name":     "Modulos php 7.1",
+            "group":    "mod_php",
+            "modules":  "",
+            "action":   "sudo apt-get install php7.1 libapache2-mod-php7.1 php7.1-mcrypt php7.1-mysql php7.1-mbstring php7.1-gettext php7.1-xml php7.1-json php7.1-curl php7.1-zip"                           
+        },
+        {   "id": 4,
+            "name":     "Modulos php 7.2",
+            "group":    "mod_php",
+            "modules":  "",
+            "action":   "sudo apt-get install php7.2 libapache2-mod-php7.2 ???7.2-mcrypt php7.2-mysql php7.2-mbstring php7.2-gettext php7.2-xml php7.2-json php7.2-curl php7.2-zip"                           
+        },
+        {   "id": 5,
+            "name":     "Ver apache.conf",
+            "group":    "apache",
+            "modules":  "",
+            "action":   "leer_apache_conf()"                           
+        },
+        {   "id": 7,
+            "name":     "Crear path a phpv",
+            "group":    "archivos",
+            "modules":  "",
+            "action":   "crear_path_phpv()"                        
+        },
+        {   "id": 8,
+            "name":     "Cargar config.json",
+            "group":    "cargar_datos",
+            "modules":  "",
+            "action":   "cargar_config_json()"                     
+        }
+    ],
+
+    "pre_requisitos":[
+        {   "id": "pr1",
+            "name":     "Repositorio php*",
+            "group":    "system",
+            "modules":  "",
+            "action":   "sudo add-apt-repository ppa:ondrej/php"        
+        }
+    ],
+    
+    "install":[
+        {   "id": 1,
+            "name":     "Repositorio php*",
+            "group":    "system",
+            "modules":  "",
+            "action":   "sudo add-apt-repository ppa:ondrej/php"        
+        }]
+}
