@@ -46,12 +46,23 @@ def leer_archivo(archivo):
     print str(texto)
     file.close
 
-
-
 def reiniciar_apache():
     os.system("sudo service apache2 restart")
     escribir_log_local("FUNCTION","reiniciar_apache()")
     restart = False
+
+def leer_apache_conf():
+    os.system("cat /etc/apache2/apache2.conf | grep -v '#' ")
+
+def crear_path_phpv():
+    os.system("echo 'alias phpv=\"cd ~/3_Script && python phpv.py\"'")
+
+def cargar_config_json():
+    with open('config.json') as file:
+        config_json = json.load(file)
+        return config_json        
+        #for submenu in data['submenu']:
+        #   print submenu["name"]
 
 def mostrar_mensaje(result, msg=""):
     if msg:
@@ -61,7 +72,7 @@ def comprobar_version_php_funcionando():
     global versionActual
     out = subprocess.check_output("php -v", shell=True)
     versionActual = out[4:7]
-    escribir_log_local("SUCCESS","comprobar_version_php_funcionando = php"+str(versionActual))
+    escribir_log_local("   ACTION","comprobar_version_php_funcionando = php"+str(versionActual))
     return versionActual
 
 def set_version_php(ver):
@@ -99,6 +110,7 @@ def set_version_php(ver):
         print "except"    
    
 def listar_modulos_php():     
+    escribir_log_local("FUNCTION","listar_modulos_php")
     global index_module
     global mods_available
     global mods_enabled
@@ -129,11 +141,7 @@ def listar_modulos_php():
     apache_status()
     print "#"*35
     print "###      "+ bcolors.OKBLUE +"  PHP MODULES      "+  bcolors.ENDC +"    ###"  
-    mod = raw_input("##   "+bcolors.OKBLUE + "        (q=Close)      "+bcolors.ENDC +"    ###\n"+"#"*35 +  "\nNumero de modulo -> ")
-    
-    
-             
-     
+    mod = raw_input("##   "+bcolors.OKBLUE + "        (q=Close)      "+bcolors.ENDC +"    ###\n"+"#"*35 +  "\nNumero de modulo -> ")             
             
     if (mod == "q"): 
         os.system("clear")                         
@@ -183,6 +191,7 @@ def apache_status():
         print "#---         "+ bcolors.OKGREEN +"Apache OK" +  bcolors.ENDC +"         ---#"
 
 def menu_informacion_sistema():
+    escribir_log_local("   MODULE","Cargado menu_informacion_sistema")
     global versionActual      
     print "###################################"
     print "#############"+ bcolors.OKGREEN +"  PHP  " +  bcolors.ENDC +"###############"
@@ -190,6 +199,7 @@ def menu_informacion_sistema():
     print "###################################"
 
 def menu_reinicio():
+    escribir_log_local("   MODULE","Cargado menu_reinicio")
     global cont   
     print "#"*35  
     print "###          "+ bcolors.WARNING +" RESTART "+  bcolors.ENDC +"          ###"
@@ -201,7 +211,8 @@ def menu_reinicio():
     cont = int(cont) + 1   
     print "#"*35
 
-def menu_log():
+def menu_log(): 
+    escribir_log_local("   MODULE","Cargado menu_log")
     global cont
     print "#"*35
     print "###       "+ bcolors.WARNING +" APACHE LOG   "+  bcolors.ENDC +"        ###"
@@ -213,6 +224,7 @@ def menu_log():
     print "#"*35
 
 def menu_modulos_php():
+    escribir_log_local("   MODULE","Cargado menu_modulos_php")
     global cont
     cont = int(cont) + 1  
     print "#"*35
@@ -221,10 +233,19 @@ def menu_modulos_php():
     cont = int(cont) + 1     
     print "#"*35
 
-def menu_comprobar_version_php():    
-    global cont    
-    global versionActual
+def automargen(pos, texto):
+    #part1 = "### "+ sub_menu['name']
+    part1 = texto
+    len_part1 = len(part1)
+    part2 = pos - len_part1
+    espacios =  " "*part2
+    #print "_____________________________________________"+ str(part2)
+    return espacios  
 
+def menu_version_php():    
+    escribir_log_local("   MODULE","Cargado menu_version_php")
+    global cont    
+    global versionActual    
     versionsAvailable = subprocess.check_output("ls /etc/apache2/mods-available/php*.conf", shell=True)
     lines = versionsAvailable.split("\n")    
     install_version = []
@@ -232,20 +253,22 @@ def menu_comprobar_version_php():
         ini = line.find("php")
         version = line[ini+3:ini+6]    
         install_version.append(version)
-  
+        
     print "#"*35
     print "###        "+ bcolors.WARNING +" CHANGE PHP   "+  bcolors.ENDC +"       ###"    
     for i in range(len(install_version)):
         if(install_version[i]):       
+           
             if(versionActual == install_version[i]):
-                print "### " + bcolors.OKGREEN + "UP--"+ install_version[i] +  bcolors.ENDC+ "                     ###"
+                print "### " + bcolors.OKGREEN + "UP--"+ install_version[i] +  bcolors.ENDC + automargen(25, "UP--"+ install_version[i])+"   ###" 
             else:                             
                 indicePHP[cont]=install_version[i]
-                print "### " + bcolors.OKBLUE + "Ver-"+install_version[i] +"  ->"+  bcolors.ENDC+" |"+  str(cont) + "|             ###"                
+                print "### " + bcolors.OKBLUE + "Ver-"+install_version[i] +"  ->"+  bcolors.ENDC+"|"+  str(cont) + "|"+ automargen(24, "Ver-"+ str(cont) +"|   ###")+ "  ###"
                 cont = cont + 1
     print "#"*35
 
 def mostrar_menu():
+    escribir_log_local("MENU","Cargado Menu Principal")
     global cont
     cont = 1    
     os.system("clear")
@@ -254,10 +277,11 @@ def mostrar_menu():
     menu_reinicio()
     menu_log()
     menu_modulos_php()
-    menu_comprobar_version_php()
+    menu_version_php()
     apache_status()
     mostrar_mensaje("True")
     cargar_opciones_menu()
+    escribir_log_local("MENU","Entrando en Menu")
   
 def cargar_opciones_menu():   
     global restart    
@@ -333,67 +357,35 @@ def cargar_opciones_menu():
     
     print option
 
-def leer_apache_conf():
-    os.system("cat /etc/apache2/apache2.conf | grep -v '#' ")
-
-def crear_path_phpv():
-    os.system("echo 'alias phpv=\"cd ~/3_Script && python phpv.py\"'")
-
-def cargar_config_json():
-    with open('config.json') as file:
-        config_json = json.load(file)
-        return config_json        
-        #for submenu in data['submenu']:
-        #   print submenu["name"]
 
 def sub_menu():
-    os.system("clear") 
     config_json = cargar_config_json()
-
-   
-    print "#"*35
-    print "###          "+ bcolors.BOLD   +"SUB-MENU" +  bcolors.ENDC +"           ###"
-    print "#"*35
-    print "#"*35
-    print "### "+ bcolors.OKBLUE   +"        INSTALAR" +  bcolors.ENDC +"            ###"
-    print "#"*35
+    escribir_log_local("MENU","Entrando en Sub Menu")
+    while(1==1):
+        os.system("clear") 
+        print "#"*35
+        print "###          "+ bcolors.BOLD   +"SUB-MENU" +  bcolors.ENDC +"           ###"
+        print "#"*35
+        print "#"*35
+        print "### "+ bcolors.OKBLUE   +"         INSTALAR" +  bcolors.ENDC +"           ###"
+        print "#"*35
+        
+        for sub_menu in config_json['submenu']:     
+            if sub_menu["visible"] == True:              
+                print "### "+ bcolors.OKBLUE   + sub_menu['name'] +  bcolors.ENDC +    automargen(25, "### "+ sub_menu['name'])   +"-> "+ bcolors.OKBLUE +  str(sub_menu['id']) +  bcolors.ENDC +"   ###"      
     
-    for sub_menu in config_json['submenu']:   
-        part1 = "### "+ sub_menu['name']
-        count_part1 = count(part1)
-        print  count_part1          
-
-        print "### "+ bcolors.OKBLUE   + sub_menu['name'] +  bcolors.ENDC + "     ->  "+ bcolors.OKBLUE +  str(sub_menu['id']) +  bcolors.ENDC +"   ###"      
- 
-    print "#"*35
-    option = raw_input("###        "+bcolors.OKBLUE + "(SUB_OPTION)"+bcolors.ENDC +"         ###\n"+"#"*35+"\nOpcion ->     ")
-    
-    for opt in config_json['submenu']:  
-
-        if str(opt["id"]) == option:
-
-            action =  str(opt["action"])
-            #os.system(action)            
-            try:
-                exec(action)
-                #sub_menu()
-            except:
-                #sub_menu()
-                print  "except"
-                if (str(opt["id"]) == "q"): 
-                    inicio() 
-
-                if (str(opt["id"]) == "0"): 
-                    inicio()  
-                
-            
-
-
-
-
-     
-
-
+        print "#"*35
+        sub_option = raw_input("###        "+bcolors.OKBLUE + "(SUB_OPTION)"+bcolors.ENDC +"         ###\n"+"#"*35+"\nOpcion ->     ")
+        
+        for opt in config_json['submenu']:                                 
+            if str(opt["id"]) == str(sub_option):               
+                action =  str(opt["action"])
+                if opt["type"] == "command":
+                    escribir_log_local("ACTION", str(action))
+                    os.system(action)                                     
+                else:
+                    escribir_log_local("ACTION", str(action))      
+                    exec(action)    
 
 
 def inicio():
