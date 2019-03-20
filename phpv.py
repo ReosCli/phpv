@@ -26,6 +26,8 @@ mods_enabled    = {}
 restart         = False        
 num_registro    = 0
 msg             = ""
+msg_x           = "ERROR"
+config_json     = ""
 
 def leer_log_local():
     log = open("phpv.log","r")
@@ -47,6 +49,11 @@ def leer_archivo(archivo):
     print str(texto)
     file.close
 
+def info_user():   
+    user_name =  subprocess.check_output("whoami", shell=True)
+    home_home =  subprocess.check_output("cd ~ && pwd", shell=True)
+    return user_name
+
 def reiniciar_apache():
     os.system("sudo service apache2 restart")
     escribir_log_local("EXEC ","reiniciar_apache()")
@@ -55,12 +62,14 @@ def reiniciar_apache():
 def leer_apache_conf():
     os.system("cat /etc/apache2/apache2.conf | grep -v '#' ")
 
-def crear_path_phpv():   
-    os.system("cd ~")   
-    log = open(".bashrc_copy","a")
-    log.write("alias phpv='cd ~/phpv && python phpv.py'") 
-    log.close()
-   
+def automargen(pos, texto):
+        #part1 = "### "+ sub_menu['name']
+    part1 = texto
+    len_part1 = len(part1)
+    part2 = pos - len_part1
+    espacios =  " "*part2
+    #print "_____________________________________________"+ str(part2)
+    return espacios  
 
 def cargar_config_json():
     with open('config.json') as file:
@@ -69,10 +78,13 @@ def cargar_config_json():
         #for submenu in data['submenu']:
         #   print submenu["name"]
 
-def mostrar_mensaje(result, msg=""):
-    if msg:
-        print msg
-        escribir_log_local("FUNCTION", "Mostar mensaje")
+def mostrar_mensaje(msg_new, type=""):    
+    global msg
+    escribir_log_local("MSG ", str(msg_new))
+    print "*"*35
+    print "***     "+str(msg_new)+automargen(25, "### "+ str(msg_new)) +"   ***"
+    print "*"*35
+    msg=""
    
 def comprobar_version_php_funcionando():
     global versionActual
@@ -151,9 +163,13 @@ def listar_modulos_php():
             
     if (mod == "q"): 
         os.system("clear")                         
-        mostrar_menu()  
-   
-    elif (mod == "y"):
+        mostrar_menu() 
+
+    if (mod == "m"): 
+        os.system("clear")                         
+        sub_menu()
+
+    if (mod == "y"):
         reiniciar_apache()      
         restart = False
         listar_modulos_php()
@@ -243,15 +259,6 @@ def menu_modulos_php():
     cont = int(cont) + 1     
     print "#"*35
 
-def automargen(pos, texto):
-    #part1 = "### "+ sub_menu['name']
-    part1 = texto
-    len_part1 = len(part1)
-    part2 = pos - len_part1
-    espacios =  " "*part2
-    #print "_____________________________________________"+ str(part2)
-    return espacios  
-
 def menu_version_php():    
     escribir_log_local("   MODULE","Cargado menu_version_php")
     global cont    
@@ -273,7 +280,7 @@ def menu_version_php():
                 print "### " + bcolors.OKGREEN + "UP--"+ install_version[i] +  bcolors.ENDC + automargen(25, "UP--"+ install_version[i])+"   ###" 
             else:                             
                 indicePHP[cont]=install_version[i]
-                print "### " + bcolors.OKBLUE + "Ver-"+install_version[i] +"  ->"+  bcolors.ENDC+"|"+  str(cont) + "|"+ automargen(24, "Ver-"+ str(cont) +"|   ###")+ "  ###"
+                print "### " + bcolors.OKBLUE + "Ver-"+install_version[i] +"  -> "+  bcolors.ENDC+"|"+  str(cont) + "|"+ automargen(23, "Ver-"+ str(cont) +"|   ###")+ "  ###"
                 cont = cont + 1
     print "#"*35
 
@@ -284,21 +291,18 @@ def mostrar_menu():
     os.system("clear")
     comprobar_version_php_funcionando()
     menu_informacion_sistema()
-    menu_reinicio()
-    menu_log()
+    #menu_reinicio()
+    #menu_log()
     menu_modulos_php()
     menu_version_php()
     apache_status()
-    mostrar_mensaje("True")
+    #mostrar_mensaje("True")
     cargar_opciones_menu()
     escribir_log_local("MENU","Entrando en Menu")
   
 def cargar_opciones_menu():   
     global restart  
     global msg
-    if msg:   
-        escribir_log_local("MSG ", str(msg))         
-        print "MSG:"+str(msg) 
 
     print "#"*35
     option = raw_input("###        "+bcolors.HEADER + "[m] = SubMenu"+bcolors.ENDC +"        ###\n"+"#"*35+"\nOpcion ->        ")   
@@ -312,50 +316,21 @@ def cargar_opciones_menu():
     if option == "y":
         reiniciar_apache()
         mostrar_menu() 
-
-    if option == "r":                
-        os.system("clear")  
-        mostrar_menu()
-                    
-    if option == "1":        
-        reiniciar_apache()      
-        restart = False
-        mostrar_menu()
-
-    if option == "2":
-        print 2
-
-    if option == "3":
-        print 3
-
-    if option == "4":      
-        print bcolors.OKBLUE + "------ APACHE ERROR LOG ------"+bcolors.ENDC
-        os.system("tail -f /var/log/apache2/error.log")         
-
-    if option == "5":
-        print bcolors.OKBLUE + "------ APACHE ACCESS LOG ------"+bcolors.ENDC     
-        os.system("tail -f /var/log/apache2/access.log") 
-
-    if option == "6":               
-        print bcolors.OKBLUE + "------      HOSTS        ------"+bcolors.ENDC     
-        print bcolors.OKBLUE + "------     ctrl + c      ------"+bcolors.ENDC 
-        os.system("tail -f /etc/hosts")
-        #mostrar_mensaje("True", cat_hosts)
                        
-    if option == "7":  
+    if option == "2":  
         listar_modulos_php()    
     
-    if option == "8":
-        set_version_php("8")  
+    if option == "3":
+        set_version_php("3")  
 
-    if option == "9":
-        set_version_php("9")    
+    if option == "4":
+        set_version_php("4")    
 
-    if option == "10":
-        set_version_php("10")
+    if option == "5":
+        set_version_php("5")
 
-    if option == "11":
-        set_version_php("11")          
+    if option == "6":
+        set_version_php("6")          
     
     else:
         mostrar_menu()
@@ -365,15 +340,19 @@ def cargar_opciones_menu():
         print "null"
 
 
+def install_phpv():  
+    global msg   
+    msg = "El archivo .bashrc existe"
+    print msg
    
 def sub_menu():
-    config_json = cargar_config_json()
-    escribir_log_local("MENU","Cargado Sub Menu")
     global msg
-    if msg:   
-        escribir_log_local("MSG ", str(msg))         
-        print "MSG:"+str(msg)
-    while(1==1):
+    global config_json 
+    escribir_log_local("MENU","Cargado Sub Menu")   
+
+    
+
+    while(True):
         os.system("clear")
         print "#"*35
         print "###          "+ bcolors.BOLD   +"SUB-MENU" +  bcolors.ENDC +"           ###"
@@ -383,28 +362,40 @@ def sub_menu():
         print "#"*35
         
         for sub_menu in config_json['submenu']:     
-            if sub_menu["visible"] == True:              
+            if sub_menu["visible"] == True:      
+                #print str(sub_menu["group"])           
                 print "### "+ bcolors.OKBLUE   + sub_menu['name'] +  bcolors.ENDC +    automargen(25, "### "+ sub_menu['name'])   +"-> "+ bcolors.OKBLUE +  str(sub_menu['id']) +  bcolors.ENDC +"   ###"      
-    
+        
+
+        
+        if msg:   
+            mostrar_mensaje(msg)
+        apache_status()
+        
+        
         print "#"*35
         sub_option = raw_input("###          "+bcolors.HEADER + "[m] = Menu"+bcolors.ENDC +"         ###\n"+"#"*35+"\nOpcion ->        ") 
         
-        for opt in config_json['submenu']:                                 
+        for opt in config_json['submenu']: 
+                                        
             if str(opt["id"]) == str(sub_option):               
                 action =  str(opt["action"])
+                
                 if opt["type"] == "command":
                     escribir_log_local("EXEC", str(action))                    
-                    msg = os.system(action)                                                    
+                    os.system(action) 
+                    msg = str(opt["msg_ok"])                                                  
                 else:
                     escribir_log_local("EXEC ", str(action))  
                     exec(action) 
-                    msg = os.system(action)  
+                    msg = str(opt["msg_ok"])  
                     
-        
-        
+            
 
 
 def inicio():
+    global config_json
+    config_json = cargar_config_json()
     os.system("clear")
     mostrar_menu()
     cargar_opciones_menu()

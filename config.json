@@ -1,67 +1,159 @@
-{   
+{     
     "submenu":[
-        {   "id": "m",
+        {   "id":       "m",
             "name":     "Cambiar de menu",
             "group":    "menu",
             "type":     "function",
             "action":   "inicio()",        
-            "visible":  false
+            "visible":  true,
+            "msg_ok":   "",
+            "msg_x":    ""
         },
-        {   "id": "1",
+        {   "id":       "y",
+            "name":     "Reiniciar Apache",
+            "group":    "system",
+            "type":     "command",
+            "action":   "sudo service apache2 restart",        
+            "visible":  true,
+            "msg_ok":   "Reiniciado servicio Apache",
+            "msg_x":    ""
+        },
+        {   "id":       "r2",
+            "name":     "Reiniciar MySql",
+            "group":    "system",
+            "type":     "command",
+            "action":   "sudo service mysql restart",        
+            "visible":  true,
+            "msg_ok":   "Reiniciado servicio MySql",
+            "msg_x":    ""
+        },
+        {   "id":       "1",
             "name":     "Instalar php 5.6",
             "group":    "mod_php",
             "type":     "command",
             "action":   "sudo apt-get install php5.6 libapache2-mod-php5.6 php5.6-mcrypt php5.6-mysql php5.6-mbstring php5.6-gettext php5.6-xml php5.6-json php5.6-curl php5.6-zip",        
-            "visible":  true
+            "visible":  true,
+            "msg_ok":   "Instalacion php 5.6 completada",
+            "msg_x":    ""
         },
-        {   "id": "2",
+        {   "id":       "2",
             "name":     "Instalar php 7.0",
             "group":    "mod_php",
             "type":     "command",
             "action":   "sudo apt-get install php7.0 libapache2-mod-php7.0 php7.0-mcrypt php7.0-mysql php7.0-mbstring php7.0-gettext php7.0-xml php7.0-json php7.0-curl php7.0-zip",        
-            "visible":  true
+            "visible":  true,
+            "msg_ok":   "Instalacion php 7.0 completada",
+            "msg_x":    ""
         },
-        {   "id": "3",
+        {   "id":       "3",
             "name":     "Instalar php 7.1",
             "group":    "mod_php",
             "type":     "command",
             "action":   "sudo apt-get install php7.1 libapache2-mod-php7.1 php7.1-mcrypt php7.1-mysql php7.1-mbstring php7.1-gettext php7.1-xml php7.1-json php7.1-curl php7.1-zip",        
-            "visible":  true
+            "visible":  true,
+            "msg_ok":   "Instalacion php 7.1 completada",
+            "msg_x":    ""
         },
-        {   "id": "4",
+        {   "id":       "4",
             "name":     "Instalar php 7.2",
             "group":    "mod_php",
             "type":     "command",
             "action":   "sudo apt-get install php7.2 libapache2-mod-php7.2 php7.2-mysql php7.2-mbstring php7.2-gettext php7.2-xml php7.2-json php7.2-curl php7.2-zip",        
-            "visible":  true
+            "visible":  true,
+            "msg_ok":   "Instalacion php 7.2 completada",
+            "msg_x":    ""
         },
-        {   "id": "5",
-            "name":     "Ver apache.conf",
+        {   "id":       "5",
+            "name":     "Instalar php 7.3",
+            "group":    "mod_php",
+            "type":     "command",
+            "action":   "sudo apt-get install php7.3 libapache2-mod-php7.3 php7.3-mysql php7.3-mbstring php7.3-gettext php7.3-xml php7.3-json php7.3-curl php7.3-zip",        
+            "visible":  true,
+            "msg_ok":   "Instalacion php 7.3 completada",
+            "msg_x":    ""
+        },
+        {   "id":       "6",
+            "name":     "apache.conf",
             "group":    "apache",
             "type":     "function",
             "action":   "leer_apache_conf()",        
-            "visible":  true
+            "visible":  true,
+            "msg_ok":   "",
+            "msg_x":    ""
         },
-        {   "id": "6",
-            "name":     "Crear path a phpv",
-            "group":    "archivos",
+        {   "id":       "7",
+            "name":     "Instalar phpv",
+            "group":    "system",
             "type":     "function",
             "action":   "crear_path_phpv()",        
-            "visible":  true
+            "visible":  true,
+            "msg_ok":   "Se ha instalado phpv",
+            "msg_x":    "No se ha instalado phpv"
         },
-        {   "id": "7",
-            "name":     "Cargar config.json",
+        {   "id":       "8",
+            "name":     "Apache error",
+            "group":    "log",
+            "type":     "command",
+            "action":   "echo 'APACHE LOG ERROR' && tail -f /var/log/apache2/error.log",        
+            "visible":  true,
+            "msg_ok":   "",
+            "msg_x":    ""
+        },
+        {   "id":       "9",
+            "name":     "Apache access",
+            "group":    "log",
+            "type":     "command",
+            "action":   "echo 'APACHE LOG ACCESS' && tail -f /var/log/apache2/access.log",        
+            "visible":  true,
+            "msg_ok":   "",
+            "msg_x":    ""
+        },
+        {   "id":       "10",
+            "name":     "Hosts",
+            "group":    "cargar_datos",
+            "type":     "command",
+            "action":   "echo 'APACHE LOG ACCESS' && tail -f /etc/hosts",        
+            "visible":  true,
+            "msg_ok":   "",
+            "msg_x":    ""
+        },
+        {   "id":       "u",
+            "name":     "Update",
             "group":    "cargar_datos",
             "type":     "function",
             "action":   "cargar_config_json()",        
-            "visible":  true
+            "visible":  true,
+            "msg_ok":   "",
+            "msg_x":    ""
+        },
+        {   "id":       "n",
+            "name":     "Install phpv",
+            "group":    "system",
+            "type":     "command",
+            "action":   "install_phpv()",        
+            "visible":  true,
+            "msg_ok":   "Instalacion phpv OK",
+            "msg_x":    "Error en la instalacion."
+        },
+        {   "id":       "q",
+            "name":     "EXIT",
+            "group":    "system",
+            "type":     "function",
+            "action":   "sys.exit()",        
+            "visible":  true,
+            "msg_ok":   "",
+            "msg_x":    ""
+        },
+        {   "id":       "y",
+            "name":     "Reiniciar Apache",
+            "group":    "system",
+            "type":     "function",
+            "action":   "reiniciar_apache()",        
+            "visible":  false,
+            "msg_ok":   "Reiniciado Apache",
+            "msg_x":    "Error al reiniciar apache"
         }
     ],
-
-
-
-
-
     "pre_requisitos":[
         {   "id": "pr1",
             "name":     "Repositorio php*",
@@ -70,12 +162,6 @@
             "action":   "sudo add-apt-repository ppa:ondrej/php"        
         }
     ],
-    
-
-
-
-
-
     "install":[
         {   "id": 1,
             "name":     "Repositorio php*",
