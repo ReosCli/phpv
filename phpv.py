@@ -55,8 +55,12 @@ def reiniciar_apache():
 def leer_apache_conf():
     os.system("cat /etc/apache2/apache2.conf | grep -v '#' ")
 
-def crear_path_phpv():
-    os.system("echo 'alias phpv=\"cd ~/3_Script && python phpv.py\"'")
+def crear_path_phpv():   
+    os.system("cd ~")   
+    log = open(".bashrc_copy","a")
+    log.write("alias phpv='cd ~/phpv && python phpv.py'") 
+    log.close()
+   
 
 def cargar_config_json():
     with open('config.json') as file:
