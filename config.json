@@ -117,6 +117,24 @@
             "msg_ok":   "",
             "msg_x":    ""
         },
+        {   "id":       "11",
+            "name":     "Apache Firewall",
+            "group":    "firewall",
+            "type":     "command",
+            "action":   "sudo ufw app info 'Apache Full'  && sudo ufw allow in 'Apache Full'",        
+            "visible":  true,
+            "msg_ok":   "Apache Firewall",
+            "msg_x":    "Apache Firewall Error"
+        },
+        {   "id":       "12",
+            "name":     "IP Publica",
+            "group":    "firewall",
+            "type":     "command",
+            "action":   "curl ifconfig.me",        
+            "visible":  true,
+            "msg_ok":   "IP publica",
+            "msg_x":    "IP publica"
+        },
         {   "id":       "u",
             "name":     "Update",
             "group":    "install",
@@ -173,6 +191,21 @@
                 "sudo apt-get install apache2 libapache2-mod-php",
                 "sudo apt-get install mysql-server",
                 "sudo apt-get install php php-mbstring php-gd php-xml php-bcmath php-ldap php-mysql"
+            ],          
+            "visible":  false,
+            "msg_ok":   "Instalacion de  Apache completada",
+            "msg_x":    "Error instalacion apache"
+        }],
+    "install_mcrypt_php7.2":[
+        {   "id":       "apache",
+            "name":     "Instalar Apache",
+            "group":    "install",
+            "type":     "command",
+            "action":[
+                "sudo apt install php-pear php7.2-dev libmcrypt-dev gcc make autoconf libc-dev pkg-config",
+                "sudo pecl -q install mcrypt-1.0.1",
+                "echo 'extension=mcrypt.so' | sudo tee -a /etc/php/7.2/mods-available/mcrypt.ini",
+                "sudo ln -s /etc/php/7.2/mods-available/mcrypt.ini /etc/php/7.2/cli/conf.d/20-mcrypt.ini"                
             ],          
             "visible":  false,
             "msg_ok":   "Instalacion de  Apache completada",
