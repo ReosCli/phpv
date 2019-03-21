@@ -385,11 +385,13 @@ def sub_menu():
                     if opt["type"] == "command":
                         escribir_log_local("EXEC ", str(action))                      
                         os.system(action)
-                        msg = str(opt["msg_ok"]) 
+                        msg_salida = eval(action) 
+                        if msg_salida == "":
+                            msg = str(opt["msg_ok"])                           
 
                 except:
-                    exec(action) 
-
+                    eval(action) 
+                    #msg_salida = eval(action) 
  
 
 
@@ -432,13 +434,14 @@ if (len(sys.argv) > 1):
 
         if param1=="y":
             reiniciar_apache()
-            print "reiniciando Apache...."
+            print "Apache reiniciado."
             time.sleep(1)            
             exit()
 
         if param1=="install":
-            reiniciar_apache()
-            print "reiniciando Apache...."
+            instalar_phpv()
+            print "\n1- phpv se ha instaldo en la carpeta '~/script/phpv/'\n2- Se ha creado un alias en '~/.bashrc'"
+            print "3- Puedes acceder con phpv desde cualquier carpeta del sistema\n"
             time.sleep(1)            
             exit()
        
