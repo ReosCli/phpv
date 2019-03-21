@@ -86,6 +86,14 @@ def cargar_config_json():
         #for submenu in data['submenu']:
         #   print submenu["name"]
 
+def update_phpv():
+    #out = subprocess.check_output("php -v", shell=True)
+    os.system("wget http://localhost/script/config_update.json")
+    with open('config.json') as file:
+        config_json = json.load(file)
+        return config_json        
+    
+
 def mostrar_mensaje(msg_new, type=""):    
     global msg
     escribir_log_local("MSG ", str(msg_new))
@@ -223,7 +231,7 @@ def apache_status():
     
     else:        
         print "#"*35
-        print "#---     "+ bcolors.OKGREEN +"Apache Php [" +versionActual+"]"+  bcolors.ENDC +"      ---#"
+        print "#---      "+ bcolors.OKGREEN +"Apache PHP "+versionActual+""+  bcolors.ENDC +"       ---#"
         print "#"*35
 
 
