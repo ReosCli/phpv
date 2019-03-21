@@ -7,6 +7,14 @@ import time
 import datetime
 import json
 
+param1 = sys.argv[0]
+if param1=="56":
+    cambiar_version_php(2)
+    msg =  "__________________________________________________" + str(param1)
+    exit()
+
+
+
 class bcolors:
     HEADER      = '\033[95m'
     OKBLUE      = '\033[94m'
@@ -17,7 +25,7 @@ class bcolors:
     BOLD        = '\033[1m'
     UNDERLINE   = '\033[4m'
  
-cont            = 1
+cont            = 0
 versionActual   = ""
 indicePHP       = {}
 index_module    = {}
@@ -93,15 +101,15 @@ def comprobar_version_php_funcionando():
     escribir_log_local("   ACTION","comprobar_version_php_funcionando = php"+str(versionActual))
     return versionActual
 
-def set_version_php(ver):
+def cambiar_version_php(ver):
     #version = "5.6"   
     global indicePHP
     global versionActual  
     global restart 
-    ver = int(ver) 
+    ver = int(ver) - 1
     version = indicePHP[ver]
     try:
-        escribir_log_local("FUNCTION","set_version_php("+str(ver)+")")
+        escribir_log_local("FUNCTION","cambiar_version_php("+str(ver)+")")
         subprocess.check_output("sudo a2dismod php"+str(versionActual), shell=True)
         print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Desactivando modulo PHP " + str(versionActual)     
         time.sleep(.8)
@@ -248,7 +256,6 @@ def menu_log():
 def menu_modulos_php():
     escribir_log_local("   MODULE","Cargado menu_modulos_php")
     global cont
-    cont = int(cont) + 1  
     print "#"*35
     print "###           "+ bcolors.WARNING +"PHP MODS  "+  bcolors.ENDC +"        ###"
     print "###"+ bcolors.OKBLUE +" Options ->  "+  bcolors.ENDC +"|"+str(cont)+"|             ###"
@@ -300,32 +307,35 @@ def cargar_opciones_menu():
     global msg
 
     print "#"*35
-    option = raw_input("###        "+bcolors.HEADER + "[m] = SubMenu"+bcolors.ENDC +"        ###\n"+"#"*35+"\nOpcion ->        ")   
+    option = raw_input("###   "+bcolors.HEADER + "[m]=SubMenu | [q]=Salir"+bcolors.ENDC +"   ###\n"+"#"*35+"\nOpcion ->        ")   
       
     option = str(option)
 
     
     if option == "m":                     
         sub_menu()
+    
+    if option == "q":                     
+        sys.exit()
 
     if option == "y":
         reiniciar_apache()
         mostrar_menu() 
                        
-    if option == "2":  
+    if option == "1":  
         listar_modulos_php()    
     
+    if option == "2":
+        cambiar_version_php("3")  
+
     if option == "3":
-        set_version_php("3")  
+        cambiar_version_php("4")    
 
     if option == "4":
-        set_version_php("4")    
+        cambiar_version_php("5")
 
     if option == "5":
-        set_version_php("5")
-
-    if option == "6":
-        set_version_php("6")          
+        cambiar_version_php("6")          
     
     else:
         mostrar_menu()
@@ -369,7 +379,7 @@ def sub_menu():
         
         
         print "#"*35
-        sub_option = raw_input("###          "+bcolors.HEADER + "[m] = Menu"+bcolors.ENDC +"         ###\n"+"#"*35+"\nOpcion ->        ") 
+        sub_option = raw_input("###   "+bcolors.HEADER + "[m]=SubMenu | [q]=Salir"+bcolors.ENDC +"   ###\n"+"#"*35+"\nOpcion ->        ")
         
         for opt in config_json['submenu']: 
                                         
