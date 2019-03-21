@@ -7,11 +7,42 @@ import time
 import datetime
 import json
 
-param1 = sys.argv[0]
-if param1=="56":
-    cambiar_version_php(2)
-    msg =  "__________________________________________________" + str(param1)
-    exit()
+
+def cambiar_version_php(ver):
+    #version = "5.6"   
+    global indicePHP
+    global versionActual  
+    global restart 
+    ver = int(ver) - 1
+    version = indicePHP[ver]
+    try:
+        escribir_log_local("FUNCTION","cambiar_version_php("+str(ver)+")")
+        subprocess.check_output("sudo a2dismod php"+str(versionActual), shell=True)
+        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Desactivando modulo PHP " + str(versionActual)     
+        time.sleep(.8)
+        escribir_log_local("  ACCTION","Desactivando modulo PHP "+str(versionActual))
+    
+        subprocess.check_output("sudo a2enmod php"+version, shell=True)
+        print bcolors.OKGREEN +"OK -> " +  bcolors.ENDC +"Activando modulo PHP " + version
+        time.sleep(.8)   
+        escribir_log_local("  ACCTION","Activando modulo PHP "+str(version))
+        reiniciar_apache() 
+        print bcolors.OKGREEN +"OK -> " +  bcolors.ENDC +"Reiniciando Apache "
+        time.sleep(.8)
+
+        subprocess.check_output("sudo update-alternatives --set php /usr/bin/php" + str(version), shell=True) 
+        print bcolors.OKGREEN +"OK -> Version actual PHP-" + str(version)   +  bcolors.ENDC     
+        escribir_log_local("  ACCTION","Update-alternatives "+str(version))
+        time.sleep(1)
+        reiniciar_apache()
+        restart = False
+        
+        mostrar_menu()
+        pass
+    except:
+        print "except"    
+   
+
 
 
 
@@ -93,7 +124,6 @@ def update_phpv():
         config_json = json.load(file)
         return config_json        
     
-
 def mostrar_mensaje(msg_new, type=""):    
     global msg
     escribir_log_local("MSG ", str(msg_new))
@@ -109,40 +139,6 @@ def comprobar_version_php_funcionando():
     escribir_log_local("   ACTION","comprobar_version_php_funcionando = php"+str(versionActual))
     return versionActual
 
-def cambiar_version_php(ver):
-    #version = "5.6"   
-    global indicePHP
-    global versionActual  
-    global restart 
-    ver = int(ver) - 1
-    version = indicePHP[ver]
-    try:
-        escribir_log_local("FUNCTION","cambiar_version_php("+str(ver)+")")
-        subprocess.check_output("sudo a2dismod php"+str(versionActual), shell=True)
-        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Desactivando modulo PHP " + str(versionActual)     
-        time.sleep(.8)
-        escribir_log_local("  ACCTION","Desactivando modulo PHP "+str(versionActual))
-    
-        subprocess.check_output("sudo a2enmod php"+version, shell=True)
-        print bcolors.OKGREEN +"OK -> " +  bcolors.ENDC +"Activando modulo PHP " + version
-        time.sleep(.8)   
-        escribir_log_local("  ACCTION","Activando modulo PHP "+str(version))
-        reiniciar_apache() 
-        print bcolors.OKGREEN +"OK -> " +  bcolors.ENDC +"Reiniciando Apache "
-        time.sleep(.8)
-
-        subprocess.check_output("sudo update-alternatives --set php /usr/bin/php" + str(version), shell=True) 
-        print bcolors.OKGREEN +"OK -> Version actual PHP-" + str(version)   +  bcolors.ENDC     
-        escribir_log_local("  ACCTION","Update-alternatives "+str(version))
-        time.sleep(1)
-        reiniciar_apache()
-        restart = False
-        
-        mostrar_menu()
-        pass
-    except:
-        print "except"    
-   
 def listar_modulos_php():     
     escribir_log_local("FUNCTION","listar_modulos_php")
     global index_module
@@ -234,8 +230,6 @@ def apache_status():
         print "#---      "+ bcolors.OKGREEN +"Apache PHP "+versionActual+""+  bcolors.ENDC +"       ---#"
         print "#"*35
 
-
-
 def menu_reinicio():
     escribir_log_local("   MODULE","Cargado menu_reinicio")
     global cont   
@@ -270,8 +264,8 @@ def menu_modulos_php():
     cont = int(cont) + 1     
     print "#"*35
 
-def menu_version_php():    
-    escribir_log_local("   MODULE","Cargado menu_version_php")
+def menu_versiones_php():    
+    escribir_log_local("   MODULE","Cargado menu_versiones_php")
     global cont    
     global versionActual    
     versionsAvailable = subprocess.check_output("ls /etc/apache2/mods-available/php*.conf", shell=True)
@@ -304,7 +298,7 @@ def mostrar_menu():
     #menu_reinicio()
     #menu_log()
     menu_modulos_php()
-    menu_version_php()
+    menu_versiones_php()
     apache_status()
     #mostrar_mensaje("True")
     cargar_opciones_menu()
@@ -352,12 +346,30 @@ def cargar_opciones_menu():
     if (option == "NULL"):
         print "null"
 
-
 def install_phpv():  
-    global msg   
-    msg = "El archivo .bashrc existe"
-    print msg
-   
+    global msg  
+    # existe = open("~/script/phpv/phpv.py","r")
+    # if existe:
+    #     print "phpv ya esta instalado"
+
+    alias =  'echo \'alias phpv="cd ~/script/phpv/ && python phpv.py"\''
+    path  =  ">> ~/.bashrc"
+
+    print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando carpeta ~/script/phpv"
+    os.system("cd ~ &&  mkdir script && cd script && mkdir phpv")    
+    time.sleep(1) 
+
+    print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Copiando archivos a ~/script/phpv"  
+    os.system("cp phpv.py config.json ~/script/phpv" )      
+    time.sleep(1)
+
+    print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando alias phpv" 
+    os.system(alias + path) 
+
+    print  bcolors.OKGREEN +"OK -> Instalación completa " + bcolors.ENDC
+    time.sleep(2)
+    os.system("cd ~/script/phpv")
+    
 def sub_menu():
     global msg
     global config_json 
@@ -402,10 +414,7 @@ def sub_menu():
                     escribir_log_local("EXEC ", str(action))  
                     exec(action) 
                     msg = str(opt["msg_ok"])  
-                    
-            
-
-
+ 
 def inicio():
     global config_json
     config_json = cargar_config_json()
@@ -414,8 +423,41 @@ def inicio():
     cargar_opciones_menu()
 
 
-
-# Iniciamos programa
-inicio()
+if (len(sys.argv) > 1):
+    param1 = sys.argv[1]
+    if param1:
+        if param1=="56":
+            menu_versiones_php()
+            comprobar_version_php_funcionando()
+            time.sleep(1)
+            cambiar_version_php(1)
+            exit()
+        if param1=="70":
+            menu_versiones_php()
+            comprobar_version_php_funcionando()
+            time.sleep(1)
+            cambiar_version_php(2)
+            exit()
+        if param1=="72":
+            menu_versiones_php()
+            comprobar_version_php_funcionando()
+            time.sleep(1)
+            cambiar_version_php(3)
+            exit()
+        if param1=="73":
+            menu_versiones_php()
+            comprobar_version_php_funcionando()
+            time.sleep(1)
+            cambiar_version_php(4)
+            exit()
+        if param1=="y":
+            reiniciar_apache()
+            print "reiniciando Apache...."
+            time.sleep(1)            
+            exit()
+       
+else:
+    # Iniciamos programa si no hay parametros
+    inicio()
 
 
