@@ -206,6 +206,8 @@ def cambiar_estado_modulo_php(mod):
     listar_modulos_php()
     
 def apache_status():
+    escribir_log_local("   MODULE","Cargado apache_status")
+    global versionActual 
     if(restart):
         print "#"*35    
         print "#¡¡¡     "+ bcolors.FAIL   +"Restart Apache (y)" +  bcolors.ENDC +"    !!!!"
@@ -213,16 +215,10 @@ def apache_status():
     
     else:        
         print "#"*35
-        print "#---         "+ bcolors.OKGREEN +"Apache OK" +  bcolors.ENDC +"         ---#"
+        print "#---     "+ bcolors.OKGREEN +"Apache Php [" +versionActual+"]"+  bcolors.ENDC +"      ---#"
         print "#"*35
 
-def menu_informacion_sistema():
-    escribir_log_local("   MODULE","Cargado menu_informacion_sistema")
-    global versionActual      
-    print "###################################"
-    print "#############"+ bcolors.OKGREEN +"  PHP  " +  bcolors.ENDC +"###############"
-    print "#############  "+ bcolors.OKGREEN +versionActual+  bcolors.ENDC +"  ###############"
-    print "###################################"
+
 
 def menu_reinicio():
     escribir_log_local("   MODULE","Cargado menu_reinicio")
@@ -290,7 +286,6 @@ def mostrar_menu():
     cont = 1    
     os.system("clear")
     comprobar_version_php_funcionando()
-    menu_informacion_sistema()
     #menu_reinicio()
     #menu_log()
     menu_modulos_php()
