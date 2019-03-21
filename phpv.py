@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
+import os.path as path
 import os
 import subprocess
 import time
@@ -117,10 +118,11 @@ def cargar_config_json():
 
 def update_phpv():
     #out = subprocess.check_output("php -v", shell=True)
-    os.system("wget http://localhost/script/config_update.json")
-    with open('config.json') as file:
-        config_json = json.load(file)
-        return config_json        
+    configJson = os.system("wget -O config.json --no-check-certificate --content-disposition https://github.com/ReosCli/json/raw/master/config.json  ")
+    print configJson
+    # with open('config.json') as file:
+    #     config_json = json.load(file)
+    #     return config_json        
     
 def mostrar_mensaje(msg_new, type=""):    
     global msg
@@ -344,29 +346,35 @@ def cargar_opciones_menu():
     if (option == "NULL"):
         print "null"
 
-def install_phpv():  
+def instalar_phpv():  
     global msg  
-    # existe = open("~/script/phpv/phpv.py","r")
-    # if existe:
-    #     print "phpv ya esta instalado"
+    #existe = open("~/script/phpv/phpv.py","r")
+    if os.path.isfile("~/script/phpv/phpv.py"):
+        print "phpv ya esta instalado"
+        inicio()
+    else:      
+        alias =  'echo \'alias phpv="cd ~/script/phpv/ && python phpv.py"\''
+        path  =  ">> ~/.bashrc_copy"
 
-    alias =  'echo \'alias phpv="cd ~/script/phpv/ && python phpv.py"\''
-    path  =  ">> ~/.bashrc"
+        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando carpeta ~/script/phpv"
+        os.system("cd ~ &&  mkdir script && cd script && mkdir phpv")    
+        time.sleep(1) 
 
-    print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando carpeta ~/script/phpv"
-    os.system("cd ~ &&  mkdir script && cd script && mkdir phpv")    
-    time.sleep(1) 
+        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Copiando archivos a ~/script/phpv"  
+        os.system("cp phpv.py config.json ~/script/phpv" )      
+        time.sleep(1)
 
-    print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Copiando archivos a ~/script/phpv"  
-    os.system("cp phpv.py config.json ~/script/phpv" )      
-    time.sleep(1)
+        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando alias phpv" 
+        os.system(alias + path) 
 
-    print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando alias phpv" 
-    os.system(alias + path) 
+        print  bcolors.OKGREEN +"OK -> Instalación completa " + bcolors.ENDC
+        time.sleep(2)
+        os.system("cd ~/script/phpv")
 
-    print  bcolors.OKGREEN +"OK -> Instalación completa " + bcolors.ENDC
-    time.sleep(2)
-    os.system("cd ~/script/phpv")
+
+
+
+
     
 def sub_menu():
     global msg

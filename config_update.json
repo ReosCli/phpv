@@ -1,4 +1,4 @@
-{   "__comment": "By ReosCli",
+{     
     "submenu":[
         {   "id":       "m",
             "name":     "Cambiar de menu",
@@ -221,8 +221,3 @@
             "msg_x":    "Error instalacion apache"
         }]
 }
-
-
-
-
-      
