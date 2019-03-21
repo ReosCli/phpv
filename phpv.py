@@ -115,7 +115,6 @@ def cargar_config_json():
         return config_json        
         #for submenu in data['submenu']:
         #   print submenu["name"]
-
     
 def mostrar_mensaje(msg_new, type=""):    
     global msg
@@ -431,25 +430,35 @@ if (len(sys.argv) > 1):
             time.sleep(1)
             cambiar_version_php(1)
             exit()
+            
         if param1=="70":
             menu_versiones_php()
             comprobar_version_php_funcionando()
             time.sleep(1)
             cambiar_version_php(2)
             exit()
+
         if param1=="72":
             menu_versiones_php()
             comprobar_version_php_funcionando()
             time.sleep(1)
             cambiar_version_php(3)
             exit()
+
         if param1=="73":
             menu_versiones_php()
             comprobar_version_php_funcionando()
             time.sleep(1)
             cambiar_version_php(4)
             exit()
+
         if param1=="y":
+            reiniciar_apache()
+            print "reiniciando Apache...."
+            time.sleep(1)            
+            exit()
+
+        if param1=="install":
             reiniciar_apache()
             print "reiniciando Apache...."
             time.sleep(1)            
