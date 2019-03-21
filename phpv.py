@@ -9,40 +9,6 @@ import datetime
 import json
 
 
-def cambiar_version_php(ver):
-    #version = "5.6"   
-    global indicePHP
-    global versionActual  
-    global restart 
-    ver = int(ver) - 1
-    version = indicePHP[ver]
-    try:
-        escribir_log_local("FUNCTION","cambiar_version_php("+str(ver)+")")
-        subprocess.check_output("sudo a2dismod php"+str(versionActual), shell=True)
-        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Desactivando modulo PHP " + str(versionActual)     
-        time.sleep(.8)
-        escribir_log_local("  ACCTION","Desactivando modulo PHP "+str(versionActual))
-    
-        subprocess.check_output("sudo a2enmod php"+version, shell=True)
-        print bcolors.OKGREEN +"OK -> " +  bcolors.ENDC +"Activando modulo PHP " + version
-        time.sleep(.8)   
-        escribir_log_local("  ACCTION","Activando modulo PHP "+str(version))
-        reiniciar_apache() 
-        print bcolors.OKGREEN +"OK -> " +  bcolors.ENDC +"Reiniciando Apache "
-        time.sleep(.8)
-
-        subprocess.check_output("sudo update-alternatives --set php /usr/bin/php" + str(version), shell=True) 
-        print bcolors.OKGREEN +"OK -> Version actual PHP-" + str(version)   +  bcolors.ENDC     
-        escribir_log_local("  ACCTION","Update-alternatives "+str(version))
-        time.sleep(1)
-        reiniciar_apache()
-        restart = False
-        
-        mostrar_menu()
-        pass
-    except:
-        print "except"    
-   
 
 
 
@@ -65,6 +31,7 @@ mods_available  = {}
 mods_enabled    = {}
 restart         = False        
 num_registro    = 0
+msg_salida      = "Sin mensaje"
 msg             = ""
 msg_x           = "ERROR"
 config_json     = ""
@@ -116,13 +83,16 @@ def cargar_config_json():
         #for submenu in data['submenu']:
         #   print submenu["name"]
     
-def mostrar_mensaje(msg_new, type=""):    
+def mostrar_mensaje(new_msg, type=""):    
     global msg
-    escribir_log_local("MSG ", str(msg_new))
+    escribir_log_local("MSG ", str(new_msg))
+    new_msg = str(new_msg)
+
     print "*"*35
-    print "***     "+str(msg_new)+automargen(25, "### "+ str(msg_new)) +"   ***"
+    print "***" + new_msg.center(26,' ') +  automargen(1, new_msg.center(29,' ')) +"   ***"
     print "*"*35
     msg=""
+    msg_salida=""
    
 def comprobar_version_php_funcionando():
     global versionActual
@@ -131,6 +101,40 @@ def comprobar_version_php_funcionando():
     escribir_log_local("   ACTION","comprobar_version_php_funcionando = php"+str(versionActual))
     return versionActual
 
+def cambiar_version_php(ver):
+    #version = "5.6"   
+    global indicePHP
+    global versionActual  
+    global restart 
+    ver = int(ver) - 1
+    version = indicePHP[ver]
+    try:
+        escribir_log_local("FUNCTION","cambiar_version_php("+str(ver)+")")
+        subprocess.check_output("sudo a2dismod php"+str(versionActual), shell=True)
+        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Desactivando modulo PHP " + str(versionActual)     
+        time.sleep(.8)
+        escribir_log_local("  ACCTION","Desactivando modulo PHP "+str(versionActual))
+    
+        subprocess.check_output("sudo a2enmod php"+version, shell=True)
+        print bcolors.OKGREEN +"OK -> " +  bcolors.ENDC +"Activando modulo PHP " + version
+        time.sleep(.8)   
+        escribir_log_local("  ACCTION","Activando modulo PHP "+str(version))
+        reiniciar_apache() 
+        print bcolors.OKGREEN +"OK -> " +  bcolors.ENDC +"Reiniciando Apache "
+        time.sleep(.8)
+
+        subprocess.check_output("sudo update-alternatives --set php /usr/bin/php" + str(version), shell=True) 
+        print bcolors.OKGREEN +"OK -> Version actual PHP-" + str(version)   +  bcolors.ENDC     
+        escribir_log_local("  ACCTION","Update-alternatives "+str(version))
+        time.sleep(1)
+        reiniciar_apache()
+        restart = False
+        
+        mostrar_menu()
+        pass
+    except:
+        print "except"    
+   
 def listar_modulos_php():     
     escribir_log_local("FUNCTION","listar_modulos_php")
     global index_module
@@ -222,31 +226,32 @@ def apache_status():
         print "#---      "+ bcolors.OKGREEN +"Apache PHP "+versionActual+""+  bcolors.ENDC +"       ---#"
         print "#"*35
 
-def menu_reinicio():
-    escribir_log_local("   MODULE","Cargado menu_reinicio")
-    global cont   
-    print "#"*35  
-    print "###          "+ bcolors.WARNING +" RESTART "+  bcolors.ENDC +"          ###"
-    print "###"+ bcolors.OKBLUE + " Apache    -> "+  bcolors.ENDC+bcolors.FAIL + str(cont)+bcolors.ENDC +"              ###"
-    cont = int(cont) + 1    
-    print "###"+ bcolors.OKBLUE + " PHP       -> "+  bcolors.ENDC+bcolors.FAIL + str(cont)+bcolors.ENDC +"              ###"
-    cont = int(cont) + 1   
-    print "###"+ bcolors.OKBLUE + " MYSQL     -> "+  bcolors.ENDC+bcolors.FAIL + str(cont)+bcolors.ENDC +"              ###"
-    cont = int(cont) + 1   
-    print "#"*35
+def instalar_phpv(): 
+    escribir_log_local("FUNCTION","instalar_phpv()") 
+    global msg  
+    #existe = open("~/script/phpv/phpv.py","r")
+    if os.path.isfile("~/script/phpv/phpv.py"):
+        print "phpv ya esta instalado"
+        mostrar_menu()
+    else:      
+        alias =  'echo \'alias phpv="cd ~/script/phpv/ && python phpv.py"\''
+        path  =  ">> ~/.bashrc_copy"
 
-def menu_log(): 
-    escribir_log_local("   MODULE","Cargado menu_log")
-    global cont
-    print "#"*35
-    print "###       "+ bcolors.WARNING +" APACHE LOG   "+  bcolors.ENDC +"        ###"
-    print "###"+ bcolors.OKBLUE +" Error    -> "+  bcolors.ENDC +"|"+str(cont)+"|             ###"
-    cont = int(cont) + 1 
-    print "###"+ bcolors.OKBLUE +" Access   -> "+  bcolors.ENDC +"|"+str(cont)+"|             ###"
-    cont = int(cont) + 1 
-    print "###"+ bcolors.OKBLUE +" Hosts    -> "+  bcolors.ENDC +"|"+str(cont)+"|             ###"
-    print "#"*35
+        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando carpeta ~/script/phpv"
+        os.system("cd ~ &&  mkdir script && cd script && mkdir phpv")    
+        time.sleep(1) 
 
+        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Copiando archivos a ~/script/phpv"  
+        os.system("cp phpv.py config.json ~/script/phpv" )      
+        time.sleep(1)
+
+        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando alias phpv" 
+        os.system(alias + path) 
+
+        print  bcolors.OKGREEN +"OK -> Instalación completa " + bcolors.ENDC
+        time.sleep(2)
+        os.system("cd ~/script/phpv")
+   
 def menu_modulos_php():
     escribir_log_local("   MODULE","Cargado menu_modulos_php")
     global cont
@@ -281,25 +286,22 @@ def menu_versiones_php():
                 cont = cont + 1
     print "#"*35
 
-def mostrar_menu():
-    escribir_log_local("MENU","Cargado Menu Principal")
+def mostrar_menu():    
     global cont
-    cont = 1    
-    os.system("clear")
-    comprobar_version_php_funcionando()
-    #menu_reinicio()
-    #menu_log()
-    apache_status()
-    menu_modulos_php()
-    menu_versiones_php()    
-    #mostrar_mensaje("True")
-    cargar_opciones_menu()
-    escribir_log_local("MENU","Entrando en Menu")
-  
-def cargar_opciones_menu():   
     global restart  
     global msg
+    global msg_salida 
+    global config_json
+    config_json = cargar_config_json()     
+    cont = 1    
 
+    os.system("clear")
+    comprobar_version_php_funcionando()
+    apache_status()
+    menu_modulos_php()
+    menu_versiones_php()   
+  
+   
     print "#"*35
     option = raw_input("###   "+bcolors.HEADER + "[m]=SubMenu | [q]=Salir"+bcolors.ENDC +"   ###\n"+"#"*35+"\nOpcion ->        ")   
       
@@ -333,47 +335,18 @@ def cargar_opciones_menu():
     
     else:
         mostrar_menu()
-        cargar_opciones_menu()
+       
 
     if (option == "NULL"):
         print "null"
+ 
+    escribir_log_local("MENU","Cargado Menu Principal")
 
-def instalar_phpv():  
-    global msg  
-    #existe = open("~/script/phpv/phpv.py","r")
-    if os.path.isfile("~/script/phpv/phpv.py"):
-        print "phpv ya esta instalado"
-        inicio()
-    else:      
-        alias =  'echo \'alias phpv="cd ~/script/phpv/ && python phpv.py"\''
-        path  =  ">> ~/.bashrc_copy"
-
-        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando carpeta ~/script/phpv"
-        os.system("cd ~ &&  mkdir script && cd script && mkdir phpv")    
-        time.sleep(1) 
-
-        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Copiando archivos a ~/script/phpv"  
-        os.system("cp phpv.py config.json ~/script/phpv" )      
-        time.sleep(1)
-
-        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando alias phpv" 
-        os.system(alias + path) 
-
-        print  bcolors.OKGREEN +"OK -> Instalación completa " + bcolors.ENDC
-        time.sleep(2)
-        os.system("cd ~/script/phpv")
-
-
-
-
-
-    
 def sub_menu():
     global msg
+    global msg_salida
     global config_json 
     escribir_log_local("MENU","Cargado Sub Menu")   
-
-    
 
     while(True):
         os.system("clear")
@@ -385,16 +358,14 @@ def sub_menu():
         for sub_menu in config_json['submenu']:     
             if sub_menu["visible"] == True:      
                 #print str(sub_menu["group"])           
-                #print "### "+ bcolors.OKBLUE   + sub_menu['name'] +  bcolors.ENDC +    automargen(25, "### "+ sub_menu['name'])   +"-> "+ bcolors.OKBLUE +  str(sub_menu['id']) +  bcolors.ENDC +"   ###"      
-                
                 print "### " + bcolors.OKBLUE  + sub_menu['name'] +  bcolors.ENDC + automargen(20, "### "+ sub_menu['name'])   + "  -> |"+  str(sub_menu['id']) + "|" + automargen(6, str(sub_menu['id']) + '|') +"###"
-
         
         if msg:   
-            mostrar_mensaje(msg)
-        
-        
-        
+            mostrar_mensaje(msg, type="")
+        else:            
+            mostrar_mensaje(msg_salida, type="")
+
+
         print "#"*35
         sub_option = raw_input("###   "+bcolors.HEADER + "[m]=SubMenu | [q]=Salir"+bcolors.ENDC +"   ###\n"+"#"*35+"\nOpcion ->        ")
         
@@ -403,22 +374,28 @@ def sub_menu():
             if str(opt["id"]) == str(sub_option):               
                 action =  str(opt["action"])
                 
-                if opt["type"] == "command":
-                    escribir_log_local("EXEC", str(action))                    
-                    os.system(action) 
-                    msg = str(opt["msg_ok"])
-                                                                      
-                else:
-                    escribir_log_local("EXEC ", str(action))  
+                try:
+                    if opt["type"] == "function":
+                        escribir_log_local("EXEC", str(action))                    
+                        #os.system(action) 
+                        msg_salida =  subprocess.check_output(action, shell=True)
+                        if msg_salida == "":
+                            msg = str(opt["msg_ok"])                                                  
+                    
+                    if opt["type"] == "command":
+                        escribir_log_local("EXEC ", str(action))                      
+                        os.system(action)
+                        msg = str(opt["msg_ok"]) 
+
+                except:
                     exec(action) 
-                    msg = str(opt["msg_ok"])  
+
  
-def inicio():
-    global config_json
-    config_json = cargar_config_json()
-    os.system("clear")
-    mostrar_menu()
-    cargar_opciones_menu()
+
+
+
+
+
 
 
 if (len(sys.argv) > 1):
@@ -429,6 +406,7 @@ if (len(sys.argv) > 1):
             comprobar_version_php_funcionando()
             time.sleep(1)
             cambiar_version_php(1)
+            escribir_log_local("PARAM","Instalacion php5.6")
             exit()
 
         if param1=="70":
@@ -466,6 +444,6 @@ if (len(sys.argv) > 1):
        
 else:
     # Iniciamos programa si no hay parametros
-    inicio()
+    mostrar_menu()
 
 

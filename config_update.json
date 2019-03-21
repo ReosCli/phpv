@@ -148,8 +148,8 @@
         {   "id":       "u",
             "name":     "Update",
             "group":    "install",
-            "type":     "function",
-            "action":   "update_phpv()",        
+            "type":     "command",
+            "action":   "wget -O config_update.json --no-check-certificate --content-disposition https://github.com/ReosCli/json/raw/master/config.json",        
             "visible":  true,
             "msg_ok":   "",
             "msg_x":    ""
