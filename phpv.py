@@ -101,13 +101,11 @@ def reiniciar_apache():
 def leer_apache_conf():
     os.system("cat /etc/apache2/apache2.conf | grep -v '#' ")
 
-def automargen(pos, texto):
-        #part1 = "### "+ sub_menu['name']
-    part1 = texto
-    len_part1 = len(part1)
-    part2 = pos - len_part1
-    espacios =  " "*part2
-    #print "_____________________________________________"+ str(part2)
+def automargen(parte2, parte1):
+    #part1 = "### "+ sub_menu['name']    
+    len_parte1 = len(parte1)
+    part_2 = parte2 - len_parte1
+    espacios =  " "*part_2
     return espacios  
 
 def cargar_config_json():

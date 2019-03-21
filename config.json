@@ -162,11 +162,20 @@
             "action":   "sudo add-apt-repository ppa:ondrej/php"        
         }
     ],
-    "install":[
-        {   "id": 1,
-            "name":     "Repositorio php*",
-            "group":    "system",
-            "modules":  "",
-            "action":   "sudo add-apt-repository ppa:ondrej/php"        
+    "install_apache":[
+        {   "id":       "apache",
+            "name":     "Instalar Apache",
+            "group":    "install",
+            "type":     "command",
+            "action":[
+                "sudo add-apt-repository ppa:ondrej/php",
+                "sudo apt-get update",
+                "sudo apt-get install apache2 libapache2-mod-php",
+                "sudo apt-get install mysql-server",
+                "sudo apt-get install php php-mbstring php-gd php-xml php-bcmath php-ldap php-mysql"
+            ],          
+            "visible":  false,
+            "msg_ok":   "Instalacion de  Apache completada",
+            "msg_x":    "Error instalacion apache"
         }]
 }
