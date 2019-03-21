@@ -116,13 +116,6 @@ def cargar_config_json():
         #for submenu in data['submenu']:
         #   print submenu["name"]
 
-def update_phpv():
-    #out = subprocess.check_output("php -v", shell=True)
-    configJson = os.system("wget -O config.json --no-check-certificate --content-disposition https://github.com/ReosCli/json/raw/master/config.json  ")
-    print configJson
-    # with open('config.json') as file:
-    #     config_json = json.load(file)
-    #     return config_json        
     
 def mostrar_mensaje(msg_new, type=""):    
     global msg
