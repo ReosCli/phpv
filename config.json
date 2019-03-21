@@ -136,12 +136,12 @@
             "msg_ok":   "IP publica",
             "msg_x":    "IP publica"
         },
-        {   "id":       "dpkg exist",
-            "name":     "dpkg exist",
+        {   "id":       "dpkg",
+            "name":     "dpkg",
             "group":    "system",
             "type":     "command",
             "action":   "dpkg",     
-            "visible":  true,
+            "visible":  false,
             "msg_ok":   "",
             "msg_x":    ""
         },

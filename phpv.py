@@ -289,9 +289,9 @@ def mostrar_menu():
     comprobar_version_php_funcionando()
     #menu_reinicio()
     #menu_log()
-    menu_modulos_php()
-    menu_versiones_php()
     apache_status()
+    menu_modulos_php()
+    menu_versiones_php()    
     #mostrar_mensaje("True")
     cargar_opciones_menu()
     escribir_log_local("MENU","Entrando en Menu")
@@ -377,23 +377,22 @@ def sub_menu():
 
     while(True):
         os.system("clear")
+        apache_status()
         print "#"*35
-        print "###          "+ bcolors.BOLD   +"SUB-MENU" +  bcolors.ENDC +"           ###"
-        print "#"*35
-        print "#"*35
-        print "### "+ bcolors.OKBLUE   +"         INSTALAR" +  bcolors.ENDC +"           ###"
+        print "### "+ bcolors.BOLD   +"         INSTALAR" +  bcolors.ENDC +"           ###"
         print "#"*35
         
         for sub_menu in config_json['submenu']:     
             if sub_menu["visible"] == True:      
                 #print str(sub_menu["group"])           
-                print "### "+ bcolors.OKBLUE   + sub_menu['name'] +  bcolors.ENDC +    automargen(25, "### "+ sub_menu['name'])   +"-> "+ bcolors.OKBLUE +  str(sub_menu['id']) +  bcolors.ENDC +"   ###"      
-        
+                #print "### "+ bcolors.OKBLUE   + sub_menu['name'] +  bcolors.ENDC +    automargen(25, "### "+ sub_menu['name'])   +"-> "+ bcolors.OKBLUE +  str(sub_menu['id']) +  bcolors.ENDC +"   ###"      
+                
+                print "### " + bcolors.OKBLUE  + sub_menu['name'] +  bcolors.ENDC + automargen(20, "### "+ sub_menu['name'])   + "  -> |"+  str(sub_menu['id']) + "|" + automargen(6, str(sub_menu['id']) + '|') +"###"
 
         
         if msg:   
             mostrar_mensaje(msg)
-        apache_status()
+        
         
         
         print "#"*35
@@ -407,7 +406,8 @@ def sub_menu():
                 if opt["type"] == "command":
                     escribir_log_local("EXEC", str(action))                    
                     os.system(action) 
-                    msg = str(opt["msg_ok"])                                                  
+                    msg = str(opt["msg_ok"])
+                                                                      
                 else:
                     escribir_log_local("EXEC ", str(action))  
                     exec(action) 
@@ -430,7 +430,7 @@ if (len(sys.argv) > 1):
             time.sleep(1)
             cambiar_version_php(1)
             exit()
-            
+
         if param1=="70":
             menu_versiones_php()
             comprobar_version_php_funcionando()
