@@ -227,24 +227,24 @@ def apache_status():
         print "#"*35
 
 def instalar_phpv(): 
-    escribir_log_local("FUNCTION","instalar_phpv()") 
+   
     global msg  
     #existe = open("~/script/phpv/phpv.py","r")
-    if os.path.isfile("~/script/phpv/phpv.py"):
+    if os.path.isfile("~/3_Script/phpv/phpv.py"):
         print "phpv ya esta instalado"
         mostrar_menu()
     else:      
-        alias =  'echo \'alias phpv="cd ~/script/phpv/ && python phpv.py"\''
+        alias =  'echo \'alias phpv="cd ~/3_Script/phpv/ && python phpv.py"\''
         path  =  ">> ~/.bashrc"
 
-        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando carpeta ~/script/phpv"
-        os.system("cd ~ &&  mkdir script && cd script && mkdir phpv")    
+        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando carpeta ~/3_Script/phpv"
+        os.system("cd ~ &&  mkdir 3_Script && cd 3_Script && mkdir phpv")    
         time.sleep(1) 
 
-        os.system("wget -O ~/script/config.json   https://github.com/ReosCli/phpv/raw/master/config.json")
-
-        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Copiando archivos a ~/script/phpv"  
-        os.system("cp phpv.py config.json ~/script/phpv" )      
+        os.system("wget -O ~/3_Script/phpv/config.json   https://github.com/ReosCli/phpv/raw/master/config.json")
+        
+        print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Copiando archivos a ~/3_Script/phpv"  
+        os.system("cp phpv.py ~/3_Script/phpv" )      
         time.sleep(1)
 
         print  bcolors.OKGREEN +"OK -> " + bcolors.ENDC +"Creando alias phpv" 
@@ -252,7 +252,10 @@ def instalar_phpv():
 
         print  bcolors.OKGREEN +"OK -> Instalación completa " + bcolors.ENDC
         time.sleep(2)
-        os.system("cd ~/script/phpv")
+
+        os.system("~/.bashrc")       
+      
+  
    
 def menu_modulos_php():
     escribir_log_local("   MODULE","Cargado menu_modulos_php")
@@ -442,14 +445,14 @@ if (len(sys.argv) > 1):
 
         if param1=="install":
             instalar_phpv()
-            print "\n1- phpv se ha instaldo en la carpeta '~/script/phpv/'\n2- Se ha creado un alias en '~/.bashrc'"
+            print "\n1- phpv se ha instaldo en la carpeta '~/3_Script/phpv/'\n2- Se ha creado un alias en '~/.bashrc'"
             print "3- Puedes acceder con phpv desde cualquier carpeta del sistema\n"
             time.sleep(1)            
             exit()
 
         if param1=="update":
-            os.system("wget -O ~/script/config.json   https://github.com/ReosCli/phpv/raw/master/config.json")
-            os.system("wget -O ~/script/phpv.py   https://github.com/ReosCli/phpv/raw/master/phpv.py")
+            os.system("wget -O ~/3_Script/config.json   https://github.com/ReosCli/phpv/raw/master/config.json")
+            os.system("wget -O ~/3_Script/phpv.py   https://github.com/ReosCli/phpv/raw/master/phpv.py")
             print "\n1- phpv se ha actualizado"           
             time.sleep(1)            
             exit()
