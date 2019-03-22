@@ -1,6 +1,6 @@
 
 {    
-    "__comment": "By ReosCli",
+    "__comment": "By ReosCli v1.3",
     "submenu":[
         {   "id":       "m",
             "name":     "Cambiar de menu",
@@ -150,7 +150,7 @@
             "name":     "Update phpv",
             "group":    "install",
             "type":     "command",
-            "action":   "wget -q -U -O config.json https://github.com/ReosCli/json/raw/master/config.json && wget -q -U -O phpv.py  https://github.com/ReosCli/json/raw/master/phpv.py",        
+            "action":   "wget -O config.json  -U https://github.com/ReosCli/json/raw/master/config.json  && wget -O phpv.py  -U  https://github.com/ReosCli/json/raw/master/phpv.py  ",        
             "visible":  true,
             "msg_ok":   "Update OK",
             "msg_x":    "Update ERROR"
