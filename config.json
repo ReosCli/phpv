@@ -1,3 +1,4 @@
+
 {    
     "__comment": "By ReosCli",
     "submenu":[
@@ -149,7 +150,7 @@
             "name":     "Update phpv",
             "group":    "install",
             "type":     "command",
-            "action":   "wget -O config_update.json --no-check-certificate --content-disposition https://github.com/ReosCli/json/raw/master/config.json",        
+            "action":   "wget -O config.json https://github.com/ReosCli/json/raw/master/config.json > /dev/null  && wget -O phpv.py  https://github.com/ReosCli/json/raw/master/phpv.py > /dev/null",    
             "visible":  true,
             "msg_ok":   "Update OK",
             "msg_x":    "Update ERROR"
@@ -159,7 +160,7 @@
             "group":    "system",
             "type":     "command",
             "action":   "install_phpv()",        
-            "visible":  true,
+            "visible":  false,
             "msg_ok":   "Instalacion phpv OK",
             "msg_x":    "Error en la instalacion."
         },
